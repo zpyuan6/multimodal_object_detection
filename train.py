@@ -21,6 +21,7 @@ from utils.dataloader import YoloDataset, yolo_dataset_collate
 from utils.utils import (download_weights, get_classes, seed_everything,
                          show_config, worker_init_fn)
 from utils.utils_fit import fit_one_epoch
+import wandb
 
 '''
 训练自己的目标检测模型一定需要注意以下几点：
@@ -39,6 +40,7 @@ from utils.utils_fit import fit_one_epoch
    如果只是训练了几个Step是不会保存的，Epoch和Step的概念要捋清楚一下。
 '''
 if __name__ == "__main__":
+    wandb.init(project="multimodal")
     #---------------------------------#
     #   Cuda    是否使用Cuda
     #           没有GPU可以设置成False
