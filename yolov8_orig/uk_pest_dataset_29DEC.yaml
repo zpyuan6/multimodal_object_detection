@@ -1,0 +1,29 @@
+
+path: F:\pest_data\Multitask_or_multimodality\YOLO_29Dec
+train: images\train  # train images (relative to 'path') 128 images
+val:  images\val  # val images (relative to 'path') 128 images
+
+# number of classes
+nc: 19
+
+# class names
+names:
+  0: INSECTA
+  1: GRAIN APHID (SITOBION AVENAE)
+  2: POLLEN BEETLE (MELIGETHES SPP.)
+  3: SNAIL
+  4: POLYGONUM LEAF BETTLE (GASTROPHYSA POLYGONI)
+  5: FLY
+  6: CABBAGE STEM FLEA BETTLE
+  7: COCCINELLIDAE (LADYBUG)
+  8: SPIDER
+  9: CHIRONOMID MIDGE
+  10: COLEOPTERA
+  11: MOSQUITO
+  12: WASP
+  13: SLUG
+  14: FROG HOPPER
+  15: ARANEUS SPP
+  16: PLANT BUG (HEMIPTERA)
+  17: EARTHWORM
+  18: LEAF MINERS
