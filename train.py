@@ -248,7 +248,7 @@ if __name__ == "__main__":
     #                   开启后会加快数据读取速度，但是会占用更多内存
     #                   内存较小的电脑可以设置为2或者0  
     #------------------------------------------------------------------#
-    num_workers         = 8
+    num_workers         = 2
 
     #------------------------------------------------------#
     #   train_annotation_path   训练图片路径和标签
@@ -493,9 +493,9 @@ if __name__ == "__main__":
             val_sampler     = None
             shuffle         = True
 
-        gen             = DataLoader(train_dataset, shuffle = shuffle, batch_size = batch_size, num_workers = num_workers, pin_memory=True, prefetch_factor=num_workers*2,  drop_last=True, collate_fn=yolo_dataset_collate, sampler=train_sampler, 
+        gen             = DataLoader(train_dataset, shuffle = shuffle, batch_size = batch_size, num_workers = num_workers, pin_memory=True, prefetch_factor=num_workers*4,  drop_last=True, collate_fn=yolo_dataset_collate, sampler=train_sampler, 
                                     worker_init_fn=partial(worker_init_fn, rank=rank, seed=seed))
-        gen_val         = DataLoader(val_dataset, shuffle = shuffle, batch_size = batch_size, num_workers = num_workers, pin_memory=True, prefetch_factor=num_workers*2, drop_last=True, collate_fn=yolo_dataset_collate, sampler=val_sampler, 
+        gen_val         = DataLoader(val_dataset, shuffle = shuffle, batch_size = batch_size, num_workers = num_workers, pin_memory=True, prefetch_factor=num_workers*4, drop_last=True, collate_fn=yolo_dataset_collate, sampler=val_sampler, 
                                     worker_init_fn=partial(worker_init_fn, rank=rank, seed=seed))
 
         #----------------------#

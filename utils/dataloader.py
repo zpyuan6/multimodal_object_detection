@@ -90,6 +90,9 @@ class YoloDataset(Dataset):
             if line.split()[1] == target_time:
                 target_lines.append(line)
 
+        while len(target_lines) < num_sample:
+            target_lines.extend(target_lines)
+
         return sample(target_lines, num_sample)
 
     def rand(self, a=0, b=1):
