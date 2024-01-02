@@ -2,7 +2,7 @@ import os
 
 import torch
 from tqdm import tqdm
-
+import wandb
 from utils.utils import get_lr
         
 def fit_one_epoch(model_train, model, ema, yolo_loss, loss_history, eval_callback, optimizer, epoch, epoch_step, epoch_step_val, gen, gen_val, Epoch, cuda, fp16, scaler, save_period, save_dir, local_rank=0):
@@ -100,6 +100,8 @@ def fit_one_epoch(model_train, model, ema, yolo_loss, loss_history, eval_callbac
         if local_rank == 0:
             pbar.set_postfix(**{'val_loss': val_loss / (iteration + 1)})
             pbar.update(1)
+
+    wandb.log({'train_loss': loss, 'val_loss': val_loss})
             
     if local_rank == 0:
         pbar.close()
