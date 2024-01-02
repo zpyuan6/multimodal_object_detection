@@ -6,7 +6,8 @@ datasets/
 Medical_Datasets/
 lfw/
 logs/
-model_data/
+model_data/*.pth
+model_data/*.ttf
 .temp_map_out/
 
 # Byte-compiled / optimized / DLL files
