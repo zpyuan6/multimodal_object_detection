@@ -9,6 +9,8 @@ logs/
 model_data/*.pth
 model_data/*.ttf
 .temp_map_out/
+2007_train.txt
+2007_val.txt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
