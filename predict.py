@@ -7,6 +7,7 @@ import time
 import cv2
 import numpy as np
 from PIL import Image
+from utils.utils import get_take_photo_day
 
 from yolo import YOLO
 
@@ -84,11 +85,13 @@ if __name__ == "__main__":
             img = input('Input image filename:')
             try:
                 image = Image.open(img)
+                create_day = get_take_photo_day(image)
+
             except:
                 print('Open Error! Try again!')
                 continue
             else:
-                r_image = yolo.detect_image(image, crop = crop, count=count)
+                r_image = yolo.detect_image(image, create_day, crop = crop, count=count)
                 r_image.show()
 
     elif mode == "video":
@@ -140,7 +143,8 @@ if __name__ == "__main__":
         
     elif mode == "fps":
         img = Image.open(fps_image_path)
-        tact_time = yolo.get_FPS(img, test_interval)
+        create_day  = get_take_photo_day(img)
+        tact_time = yolo.get_FPS(img, create_day, test_interval)
         print(str(tact_time) + ' seconds, ' + str(1/tact_time) + 'FPS, @batch_size 1')
 
     elif mode == "dir_predict":
@@ -153,7 +157,8 @@ if __name__ == "__main__":
             if img_name.lower().endswith(('.bmp', '.dib', '.png', '.jpg', '.jpeg', '.pbm', '.pgm', '.ppm', '.tif', '.tiff')):
                 image_path  = os.path.join(dir_origin_path, img_name)
                 image       = Image.open(image_path)
-                r_image     = yolo.detect_image(image)
+                create_day  = get_take_photo_day(image)
+                r_image     = yolo.detect_image(image, create_day)
                 if not os.path.exists(dir_save_path):
                     os.makedirs(dir_save_path)
                 r_image.save(os.path.join(dir_save_path, img_name.replace(".jpg", ".png")), quality=95, subsampling=0)

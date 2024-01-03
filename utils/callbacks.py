@@ -107,7 +107,7 @@ class EvalCallback():
                 f.write(str(0))
                 f.write("\n")
 
-    def get_map_txt(self, image_id, image, class_names, map_out_path):
+    def get_map_txt(self, image_id, image, one_hot_time, class_names, map_out_path):
         f = open(os.path.join(map_out_path, "detection-results/"+image_id+".txt"), "w", encoding='utf-8') 
         image_shape = np.array(np.shape(image)[0:2])
         #---------------------------------------------------------#
@@ -124,15 +124,17 @@ class EvalCallback():
         #   添加上batch_size维度
         #---------------------------------------------------------#
         image_data  = np.expand_dims(np.transpose(preprocess_input(np.array(image_data, dtype='float32')), (2, 0, 1)), 0)
+        one_hot_time = np.expand_dims(one_hot_time, 0)
 
         with torch.no_grad():
             images = torch.from_numpy(image_data)
+            one_hot_time = torch.from_numpy(one_hot_time)
             if self.cuda:
                 images = images.cuda()
             #---------------------------------------------------------#
             #   将图像输入网络当中进行预测！
             #---------------------------------------------------------#
-            outputs = self.net(images)
+            outputs = self.net(images, one_hot_time)
             outputs = self.bbox_util.decode_box(outputs)
             #---------------------------------------------------------#
             #   将预测框进行堆叠，然后进行非极大抑制
@@ -183,14 +185,17 @@ class EvalCallback():
                 #   读取图像并转换成RGB图像
                 #------------------------------#
                 image       = Image.open(line[0])
+                create_time = int(line[1])
+                one_hot_time = np.zeros(366)
+                np.put(one_hot_time, create_time, 1)
                 #------------------------------#
                 #   获得预测框
                 #------------------------------#
-                gt_boxes    = np.array([np.array(list(map(int,box.split(',')))) for box in line[1:]])
+                gt_boxes    = np.array([np.array(list(map(int,box.split(',')))) for box in line[2:]])
                 #------------------------------#
                 #   获得预测txt
                 #------------------------------#
-                self.get_map_txt(image_id, image, self.class_names, self.map_out_path)
+                self.get_map_txt(image_id, image, one_hot_time, self.class_names, self.map_out_path)
                 
                 #------------------------------#
                 #   获得真实框txt

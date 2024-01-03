@@ -3,7 +3,18 @@ import random
 import numpy as np
 import torch
 from PIL import Image
+import datetime
 
+def get_take_photo_day(img:Image):
+    img_exif = img.getexif()
+    # print(img_exif)
+    if 306 in img_exif:
+        photo_create_time = img_exif[306]
+        dt = datetime.datetime.strptime(photo_create_time, '%Y:%m:%d %H:%M:%S')
+        tt = dt.timetuple()
+        return tt.tm_yday
+    else:
+        return 0
 
 #---------------------------------------------------------#
 #   将图像转换成RGB图像，防止灰度图在预测时报错。

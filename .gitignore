@@ -12,6 +12,8 @@ model_data/*.ttf
 2007_train.txt
 2007_val.txt
 wandb/*
+runs/*
+*.pt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
