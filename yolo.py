@@ -139,7 +139,7 @@ class YOLO(object):
 
         with torch.no_grad():
             images = torch.from_numpy(image_data)
-            one_hot_time = torch.from_numpy(one_hot_time)
+            one_hot_time = torch.from_numpy(one_hot_time).type(torch.FloatTensor)
             if self.cuda:
                 images = images.cuda()
                 one_hot_time = one_hot_time.cuda()
@@ -251,7 +251,7 @@ class YOLO(object):
 
         with torch.no_grad():
             images = torch.from_numpy(image_data)
-            one_hot_time = torch.from_numpy(one_hot_time)
+            one_hot_time = torch.from_numpy(one_hot_time).type(torch.FloatTensor)
             if self.cuda:
                 images = images.cuda()
                 one_hot_time = one_hot_time.cuda()
@@ -312,7 +312,7 @@ class YOLO(object):
 
         with torch.no_grad():
             images = torch.from_numpy(image_data)
-            one_hot_time = torch.from_numpy(one_hot_time)
+            one_hot_time = torch.from_numpy(one_hot_time).type(torch.FloatTensor)
             if self.cuda:
                 images = images.cuda()
                 one_hot_time = one_hot_time.cuda()
@@ -405,7 +405,7 @@ class YOLO(object):
 
         with torch.no_grad():
             images = torch.from_numpy(image_data)
-            one_hot_time = torch.from_numpy(one_hot_time)
+            one_hot_time = torch.from_numpy(one_hot_time).type(torch.FloatTensor)
             if self.cuda:
                 images = images.cuda()
                 one_hot_time = one_hot_time.cuda()
