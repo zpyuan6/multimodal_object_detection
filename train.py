@@ -76,6 +76,9 @@ if __name__ == "__main__":
     #                   训练前一定要修改classes_path，使其对应自己的数据集
     #---------------------------------------------------------------------#
     classes_path    = 'model_data/uk_pest.txt'
+
+    model_structure_index = 0
+    model_structure_list = ['original', 'simply_multimodal', 'attention_multimodal']
     #----------------------------------------------------------------------------------------------------------------------------#
     #   权值文件的下载请看README，可以通过网盘下载。模型的 预训练权重 对不同数据集是通用的，因为特征是通用的。
     #   模型的 预训练权重 比较重要的部分是 主干特征提取网络的权值部分，用于进行特征提取。
@@ -295,7 +298,13 @@ if __name__ == "__main__":
     #------------------------------------------------------#
     #   创建yolo模型
     #------------------------------------------------------#
-    model = YoloBody(input_shape, num_classes, phi, pretrained=pretrained)
+    model = YoloBody(
+        num_classes, 
+        phi, 
+        pretrained=pretrained,
+        model_structure_index = model_structure_index,
+        model_structure_list = model_structure_list
+        )
 
     if model_path != '':
         #------------------------------------------------------#

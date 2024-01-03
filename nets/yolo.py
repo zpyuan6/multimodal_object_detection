@@ -59,10 +59,27 @@ class TimeAttention(nn.Module):
 
     def forward(self, x, time):
         time_feature = self.ln(time).unsqueeze(-1).unsqueeze(-1)
-        return x * self.act(time_feature)
+        return x * self.act(time_feature) + x
+
+class TimeAdd(nn.Module):
+    def __init__(self, channels:int) -> None:
+        super().__init__()
+        self.ln = nn.Linear(366, channels)
+        self.act1 = nn.Sigmoid()
+        self.fc = nn.Conv2d(channels, channels, 1, 1, 0, bias=True)
+        self.act2 = nn.Sigmoid()
+
+    def forward(self, x, time):
+        time_feature =self.act1(self.ln(time).unsqueeze(-1).unsqueeze(-1))
+        return self.act2(self.fc(x + time_feature)) * x
 
 class YoloBody(nn.Module):
-    def __init__(self, input_shape, num_classes, phi, pretrained=False):
+    def __init__(self, 
+        num_classes, 
+        phi, 
+        pretrained=False, 
+        model_structure_index:int=0,
+        model_structure_list:list=[]):
         super(YoloBody, self).__init__()
         depth_dict          = {'n' : 0.33, 's' : 0.33, 'm' : 0.67, 'l' : 1.00, 'x' : 1.00,}
         width_dict          = {'n' : 0.25, 's' : 0.50, 'm' : 0.75, 'l' : 1.00, 'x' : 1.25,}
@@ -74,6 +91,8 @@ class YoloBody(nn.Module):
         #-----------------------------------------------#
         #   输入图片是3, 640, 640
         #-----------------------------------------------#
+        self.model_name = model_structure_list[model_structure_index]
+        self.model_structure_index = model_structure_index
 
         #---------------------------------------------------#   
         #   生成主干模型
@@ -84,9 +103,13 @@ class YoloBody(nn.Module):
         #---------------------------------------------------#
         self.backbone   = Backbone(base_channels, base_depth, deep_mul, phi, pretrained=pretrained)
 
-        self.multimodal_1 = TimeAttention(base_channels * 4)
-        self.multimodal_2 = TimeAttention(base_channels * 8)
-        self.multimodal_3 = TimeAttention(int(base_channels * 16 * deep_mul))
+        if self.model_structure_index == 2:
+            self.multimodal_1 = TimeAttention(base_channels * 4)
+            self.multimodal_2 = TimeAttention(base_channels * 8)
+            self.multimodal_3 = TimeAttention(int(base_channels * 16 * deep_mul))
+        elif self.model_structure_index == 1:
+            self.multimodal_1 = TimeAdd(base_channels * 4)
+
 
         #------------------------加强特征提取网络------------------------# 
         self.upsample   = nn.Upsample(scale_factor=2, mode="nearest")
@@ -137,9 +160,12 @@ class YoloBody(nn.Module):
         #  backbone
         feat1, feat2, feat3 = self.backbone.forward(x)
 
-        feat1 = self.multimodal_1(feat1, one_hot_time)
-        feat2 = self.multimodal_2(feat2, one_hot_time)
-        feat3 = self.multimodal_3(feat3, one_hot_time)
+        if self.model_structure_index == 2:
+            feat1 = self.multimodal_1(feat1, one_hot_time)
+            feat2 = self.multimodal_2(feat2, one_hot_time)
+            feat3 = self.multimodal_3(feat3, one_hot_time)
+        elif self.model_structure_index == 1:
+            feat1 = self.multimodal_1(feat1, one_hot_time)
         
         #------------------------加强特征提取网络------------------------# 
         # 1024 * deep_mul, 20, 20 => 1024 * deep_mul, 40, 40
