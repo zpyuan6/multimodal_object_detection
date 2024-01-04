@@ -397,6 +397,7 @@ if __name__ == "__main__":
 
     if local_rank == 0:
         show_config(
+            model_structure_name = model_structure_list[model_structure_index], 
             classes_path = classes_path, model_path = model_path, input_shape = input_shape, \
             Init_Epoch = Init_Epoch, Freeze_Epoch = Freeze_Epoch, UnFreeze_Epoch = UnFreeze_Epoch, Freeze_batch_size = Freeze_batch_size, Unfreeze_batch_size = Unfreeze_batch_size, Freeze_Train = Freeze_Train, \
             Init_lr = Init_lr, Min_lr = Min_lr, optimizer_type = optimizer_type, momentum = momentum, lr_decay_type = lr_decay_type, \
