@@ -22,6 +22,7 @@ from utils.utils import (download_weights, get_classes, seed_everything,
                          show_config, worker_init_fn)
 from utils.utils_fit import fit_one_epoch
 import wandb
+import argparse
 
 '''
 训练自己的目标检测模型一定需要注意以下几点：
@@ -40,11 +41,17 @@ import wandb
    如果只是训练了几个Step是不会保存的，Epoch和Step的概念要捋清楚一下。
 '''
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Training Yolov8 Model")
+    parser.add_argument('-c', '--Cuda', type=bool, default=True)
+    parser.add_argument('-m', '--model_structure_index', type=int, default=0)
+    parser.add_argument('-n', '--num_workers', type=int, default=2)
+    args = parser.parse_args()
+    print(args.Cuda, args.model_structure_index, args.num_workers)
     #---------------------------------#
     #   Cuda    是否使用Cuda
     #           没有GPU可以设置成False
     #---------------------------------#
-    Cuda            = True
+    Cuda            = args.Cuda
     #----------------------------------------------#
     #   Seed    用于固定随机种子
     #           使得每次独立训练都可以获得一样的结果
@@ -77,7 +84,7 @@ if __name__ == "__main__":
     #---------------------------------------------------------------------#
     classes_path    = 'model_data/uk_pest.txt'
 
-    model_structure_index = 0
+    model_structure_index = args.model_structure_index
     model_structure_list = ['original', 'simply_multimodal', 'attention_multimodal']
     #----------------------------------------------------------------------------------------------------------------------------#
     #   权值文件的下载请看README，可以通过网盘下载。模型的 预训练权重 对不同数据集是通用的，因为特征是通用的。
@@ -251,7 +258,7 @@ if __name__ == "__main__":
     #                   开启后会加快数据读取速度，但是会占用更多内存
     #                   内存较小的电脑可以设置为2或者0  
     #------------------------------------------------------------------#
-    num_workers         = 2
+    num_workers         = args.num_workers
 
     #------------------------------------------------------#
     #   train_annotation_path   训练图片路径和标签
