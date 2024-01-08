@@ -45,6 +45,8 @@ if __name__ == "__main__":
     parser.add_argument('-c', '--Cuda', type=bool, default=True)
     parser.add_argument('-m', '--model_structure_index', type=int, default=0)
     parser.add_argument('-n', '--num_workers', type=int, default=2)
+    parser.add_argument('-p', '--phi', type=str, default='n')
+    parser.add_argument('-mp', '--model_path', type=str, default='model_data/yolov8_n.pth')
     args = parser.parse_args()
     print(args.Cuda, args.model_structure_index, args.num_workers)
     #---------------------------------#
@@ -105,7 +107,7 @@ if __name__ == "__main__":
     #      可以设置mosaic=True，直接随机初始化参数开始训练，但得到的效果仍然不如有预训练的情况。（像COCO这样的大数据集可以这样做）
     #   2、了解imagenet数据集，首先训练分类模型，获得网络的主干部分权值，分类模型的 主干部分 和该模型通用，基于此进行训练。
     #----------------------------------------------------------------------------------------------------------------------------#
-    model_path      = 'model_data/yolov8_n.pth'
+    model_path      = args.model_path
     #------------------------------------------------------#
     #   input_shape     输入的shape大小，一定要是32的倍数
     #------------------------------------------------------#
@@ -118,7 +120,7 @@ if __name__ == "__main__":
     #                   l : 对应yolov8_l
     #                   x : 对应yolov8_x
     #------------------------------------------------------#
-    phi             = 'n'
+    phi             = args.phi
     #----------------------------------------------------------------------------------------------------------------------------#
     #   pretrained      是否使用主干网络的预训练权重，此处使用的是主干的权重，因此是在模型构建的时候进行加载的。
     #                   如果设置了model_path，则主干的权值无需加载，pretrained的值无意义。
@@ -241,7 +243,7 @@ if __name__ == "__main__":
     #------------------------------------------------------------------#
     #   save_dir        权值与日志文件保存的文件夹
     #------------------------------------------------------------------#
-    save_dir            = 'logs_'+model_structure_list[model_structure_index]
+    save_dir            = 'logs_'+model_structure_list[model_structure_index]+"_"+phi
     #------------------------------------------------------------------#
     #   eval_flag       是否在训练时进行评估，评估对象为验证集
     #                   安装pycocotools库后，评估体验更佳。
