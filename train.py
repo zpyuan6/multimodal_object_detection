@@ -21,6 +21,7 @@ from utils.dataloader import YoloDataset, yolo_dataset_collate
 from utils.utils import (download_weights, get_classes, seed_everything,
                          show_config, worker_init_fn)
 from utils.utils_fit import fit_one_epoch
+from utils.early_stop import EarlyStopping
 import wandb
 import argparse
 
@@ -315,6 +316,8 @@ if __name__ == "__main__":
         model_structure_list = model_structure_list
         )
 
+    earlyStop = EarlyStopping(patience=30, verbose=True)
+
     if model_path != '':
         #------------------------------------------------------#
         #   权值文件请看README，百度网盘下载
@@ -582,7 +585,11 @@ if __name__ == "__main__":
 
             set_optimizer_lr(optimizer, lr_scheduler_func, epoch)
 
-            fit_one_epoch(model_train, model, ema, yolo_loss, loss_history, eval_callback, optimizer, epoch, epoch_step, epoch_step_val, gen, gen_val, UnFreeze_Epoch, Cuda, fp16, scaler, save_period, log_dir, local_rank)
+            val_loss = fit_one_epoch(model_train, model, ema, yolo_loss, loss_history, eval_callback, optimizer, epoch, epoch_step, epoch_step_val, gen, gen_val, UnFreeze_Epoch, Cuda, fp16, scaler, save_period, log_dir, local_rank)
+
+            if earlyStop(val_loss):
+                print(f"Early Stop Training at epoch {epoch}")
+                break
             
             if distributed:
                 dist.barrier()
