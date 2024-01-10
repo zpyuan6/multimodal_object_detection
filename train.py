@@ -316,7 +316,7 @@ if __name__ == "__main__":
         model_structure_list = model_structure_list
         )
 
-    earlyStop = EarlyStopping(patience=30, verbose=True)
+    earlyStop = EarlyStopping(patience=100, verbose=True)
 
     if model_path != '':
         #------------------------------------------------------#
